@@ -38,18 +38,17 @@ def rename_file(basepath, row_array, row_count, sheet, _inner, index):
                     row_array.append(row_count)
             except ValueError:
                 pass
-
             src = basepath + '/' + os.listdir(basepath)[index]
             dst = './new_folder'
             shutil.copy2(src, dst)
             s = ""
             folder_name_inner = _inner.replace(' ', '').replace('-', '')
-
             os.rename(dst + '/' + os.listdir(basepath)[index], dst + '/' + folder_name_inner + '_' + s.join(
                 re.findall("[0-9]", os.listdir(basepath)[index])) + '.pdf')
     except ValueError:
         pass
     rename_file(basepath, row_array, row_count, sheet, _inner, index - 1)
+    return 1
 
 
 def find_name(directory, count, folder_name_outer, folder_name_split, index):
@@ -91,6 +90,7 @@ def calc_rows(sheet, _path, row_array, row_count):
             print('the folder was not found A')
     calc_rows(sheet, _path, row_array, row_count - 1)
     format_cells(row_array)
+    return row_count
 
 
 def renaming():
@@ -103,6 +103,7 @@ def renaming():
     wb = xlrd.open_workbook(loc)
     sheet = wb.sheet_by_name('Sheet1')
     check_path(os.listdir('.'), len(os.listdir('.')), sheet, sheet.nrows)
+    return 1
 
 
 def check_path(_dir, index, sheet, nrows):
@@ -112,6 +113,7 @@ def check_path(_dir, index, sheet, nrows):
             return 0
         calc_rows(sheet, _dir[index], row_array, nrows)
     check_path(_dir, index - 1, sheet, nrows)
+    return './' + _dir[index]
 
 
 def enumerate_cells(row_array, index, wksht, alpha):
@@ -121,6 +123,7 @@ def enumerate_cells(row_array, index, wksht, alpha):
         cell.fill = PatternFill(start_color="008000", end_color="008000", fill_type="solid")
         col = col + 1
     enumerate_cells(row_array, index - 1)
+    return col == wksht.max_column
 
 
 def format_cells(row_array):
@@ -129,3 +132,4 @@ def format_cells(row_array):
     # Enumerate the cells in the second row
     enumerate_cells(row_array, len(row_array), wkbk['Sheet1'], ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'])
     wkbk.save(filename=file)
+    return 1

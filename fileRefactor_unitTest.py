@@ -1,3 +1,0 @@
-import uniitest
-
-class TestFileRefactor():
